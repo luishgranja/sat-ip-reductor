@@ -41,21 +41,23 @@ def literals_and_constraints(n_literals):
         var = str(x)
         literals += f'var 0..1: v{var}; var 0..1: n_v{var};\n'
         constraints += f'constraint v{var} + n_v{var} = 1;\n'
-        output += f'"v{var}=" ,show(v{var}), "\\t-v{var}=", show(n_v{var}),' if x == 0 else f'"\\nv{var}=" ,show(v{var}), "\\t-v{var}=", show(n_v{var}),'
         if x == n_literals: # Verificar si es la ultima iteracion para delar de poner las comas y poner un ]
             output += f'"\\nv{var}=" ,show(v{var}), "\\t-v{var}=", show(n_v{var})]'
+            break
+        output += f'"v{var}=" ,show(v{var}), "\\t-v{var}=", show(n_v{var}),' if x == 0 else f'"\\nv{var}=" ,show(v{var}), "\\t-v{var}=", show(n_v{var}),'
+
 
 
     s.write(literals) # Se escribe en el archivo los literales
     s.write(constraints) # Se escribe en el archivo los constraints
 
 
-instances = glob.glob('../../InstanciasSAT/*.cnf') # Lista con las rutas de las instancias
+instances = glob.glob('../InstanciasSAT/*.cnf') # Lista con las rutas de las instancias
 
 for instance in instances:
     
     f = open(instance, "r") # buffer para archivo de entrada
-    s = open('../../InstanciasMiniZinc/' + instance.strip('../../InstanciasSAT/') + '.mzn',"w+") # buffer para archivo de salida
+    s = open('../InstanciasMiniZinc/' + instance.strip('../InstanciasSAT/') + '.mzn',"w+") # buffer para archivo de salida
 
     # Ciclo donde se lleva a cabo la lectura del archivo
     for line in f:
