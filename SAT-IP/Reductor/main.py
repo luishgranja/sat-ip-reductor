@@ -6,16 +6,13 @@ output = ''
 def header_reader(line):
     comments = ''
     clausoles_aux = ''
-    aux = line[0]
-    # Se verifica si la linea es un comentario
-    if(aux == 'c'):
+    aux = line[0] # Primer caracter de la linea
+    if(aux == 'c'):# Se verifica si la linea es un comentario
         aux_comment = line.split('c')[1]
         comments += f'% {aux_comment}\n'
         s.write(comments)
-    # Se verifica si la linea es 'p'
-    elif(aux == 'p'):
-        # Se envia el numero de literales para construir las variables de los literales
-        literals_and_constraints(int(line.split()[2]))
+    elif(aux == 'p'): # Se verifica si la linea es 'p', que describe el problema
+        literals_and_constraints(int(line.split()[2])) # Se envia el numero de literales para construir las variables de los literales
         s.write('\n% Clausulas\n')
     else:
         clausoles_aux += clausoles(line)
@@ -26,18 +23,12 @@ def clausoles(line):
     c = 'constraint '
     line_aux = line.split()
     for x in range(0, len(line_aux)-1):
-        if int(line_aux[x]) > 0: # Verificar si el numero es positivo para ver que nombre de variable se le da
+        if int(line_aux[x]) > 0: # Verificar si el numero es positivo para asignar nombre de variable
             var = str(line_aux[x])
-            if x == len(line_aux)-2: # Verificar si es la ultima clausula para poner el ; y >=1
-                c += f'v{var} >= 1;\n'
-            else:
-                c += f'v{var} + '
+            c += f'v{var} >= 1;\n' if x == len(line_aux)-2 else f'v{var} + ' # Verificar si es la ultima clausula para poner el ; y >=1               
         else:
-            var = int(line_aux[x]) * -1
-            if x == len(line_aux)-2:
-                c += f'n_v{var} >= 1;\n'
-            else:
-                c += f'n_v{var} + '
+            var = str(int(line_aux[x]) * -1)
+            c += f'n_v{var} >= 1;\n' if x == len(line_aux)-2 else f'n_v{var} + '
     return c
 
 # Construir literales y constraints
@@ -50,9 +41,9 @@ def literals_and_constraints(n_literals):
         var = str(x)
         literals += f'var 0..1: v{var}; var 0..1: n_v{var};\n'
         constraints += f'constraint v{var} + n_v{var} = 1;\n'
-        output += f'"v{var}=" ,show(v{var}), "\\t-v{var}=", show(n_v{var}),'
+        output += f'"v{var}=" ,show(v{var}), "\\t-v{var}=", show(n_v{var}),' if x == 0 else f'"\\nv{var}=" ,show(v{var}), "\\t-v{var}=", show(n_v{var}),'
         if x == n_literals: # Verificar si es la ultima iteracion para delar de poner las comas y poner un ]
-            output += f'"v{var}=" ,show(v{var}), "\\t-v{var}=", show(n_v{var})]'
+            output += f'"\\nv{var}=" ,show(v{var}), "\\t-v{var}=", show(n_v{var})]'
 
 
     s.write(literals) # Se escribe en el archivo los literales
