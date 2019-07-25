@@ -7,16 +7,18 @@ def header_reader(line):
     comments = ''
     clausoles_aux = ''
     aux = line[0] # Primer caracter de la linea
-    if(aux == 'c'):# Se verifica si la linea es un comentario
-        aux_comment = line.split('c')[1]
-        comments += f'% {aux_comment}\n'
-        s.write(comments)
-    elif(aux == 'p'): # Se verifica si la linea es 'p', que describe el problema
-        literals_and_constraints(int(line.split()[2])) # Se envia el numero de literales para construir las variables de los literales
-        s.write('\n% Clausulas\n')
-    else:
-        clausoles_aux += clausoles(line)
-        s.write(clausoles_aux)
+    if(len(line) > 2):
+	    car = line.split()[-1]
+	    if(aux == 'c'):# Se verifica si la linea es un comentario
+	        aux_comment = line.split('c')[1]
+	        comments += f'% {aux_comment}\n'
+	        s.write(comments)
+	    elif(aux == 'p'): # Se verifica si la linea es 'p', que describe el problema
+	        literals_and_constraints(int(line.split()[2])) # Se envia el numero de literales para construir las variables de los literales
+	        s.write('\n% Clausulas\n')
+	    elif(car == '0' and len(line)>1):
+	        clausoles_aux += clausoles(line)
+	        s.write(clausoles_aux)
 
 # Funcion para transformar las clausulas (escribe una clausula a la vez)
 def clausoles(line):
